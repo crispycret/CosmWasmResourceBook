@@ -13,10 +13,15 @@ Obviously the first thing is to setup the environment, lets start there.
 
 ## Environment Setup
 
-I will assume that because it's 2022 your setup is Windows 10/11 runing `WSL 2`.
-If `WSL 2` is not setup on your system check out this resource before moving on.
+I will assume that because it's 2022 your setup is Windows 10/11 runing `WSL2`.
+If you don't know what I'm talking about or simply wish to following along, check out this resource before moving on.
 
 Cooming Soon. A few resources I need to compile to make this as straight forward as possible.
+
+
+### Installing Juno
+
+Just kidding. The first thing to do here is to install Juno dependencies.
 
 
 
