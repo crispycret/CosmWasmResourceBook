@@ -195,7 +195,7 @@ Save the file and run `source ~/.profile` for these changes to take place or res
 
 Check that these changes did take place by checking the variables.
 
-'''
+```
 echo $CHAIN_ID
 echo $MONKIKER_NAME
 ```
