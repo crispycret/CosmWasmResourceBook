@@ -177,7 +177,7 @@ You can see that the github `version-tag` we used for checkout is the version th
 
 You may have also noticed the cli for juno is appended by a `d` that is because we have installed the juno daemon.
 
-#### Configuring the node.
+#### Configuring the environment.
 
 The following section in the offical docs sets these system variables only for the current shell session. They do not persist when the shell is closed. I will assume that you will forget that you even set system variables when you come back later on. So, we will add these system variables in the `~/.profile` file so that they persist. Afterwards, you won't need to worry about these variables again.
 
@@ -203,13 +203,108 @@ echo $MONIKER_NAME
 #### Set persistent peers
 In the following section of the offical docs we are told to persistent peers. This is to allow our node to join the netwrok and communicate with other test nodes. As normal for me, I could not get this to work. Good news though, we are simply running a local test node and have no need to communicate with other test nodes so we can skip this part.
 
+But for completions sake here are the commands from the offical doc.
+```
+#Set the base repo URL for the testnet & retrieve peers
+CHAIN_REPO="https://raw.githubusercontent.com/CosmosContracts/testnets/main/$CHAIN_ID" && \
+export PEERS="$(curl -s "$CHAIN_REPO/persistent_peers.txt")"
+
+# check it worked
+echo $PEERS
+```
+As of now the commands are trying to pull persistent peers from this file that does not seem to exist/host content.
+https://raw.githubusercontent.com/CosmosContracts/testnets/main/uni-2/persistent_peers.txt
 
 
+#### Setting the minimum gas price.
+You should have no problems not running this but since it's covered in the docs we will do it anyways.
+```
+# note testnet denom
+sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.0025ujunox\"/" ~/.juno/config/app.toml
+```
 
 
+### Setting up the Node
+Were almost done with the setup, just a few more steps.
+Note: We are only setting up a node not a validator. See https://docs.junonetwork.io/validators/joining-the-testnets#setting-up-the-node for how to upgrade your node to a validator.
+
+#### Initialize the chain
+`junod init "$MONIKER_NAME --chain-id $CHAIN_ID`
+
+This will generate the following files in `~/.juno/config/`
+* genesis.json
+* node_key.json
+* priv_validator_key.json
 
 
+#### Download the genesis file
+```
+curl https://raw.githubusercontent.com/CosmosContracts/testnets/main/$CHAIN_ID/genesis.json > ~/.juno/config/genesis.json
+```
 
+This will replace the genesis file created using the `junod init` command with the genesis file for the testnet
+
+
+#### Persistent peers again
+Skiping persistent peers again. Here is the link https://docs.junonetwork.io/validators/joining-the-testnets#set-persistent-peers-1
+
+
+#### Create a local key pair
+Now we must create a local key pair for our test node.
+
+```
+junod keys add <key-name>
+
+# Query the keystore for your public address
+junod keys show <key-name> -a
+```
+Replacing `<key-name>` with a key name of your choosing.
+I choose `resourcebook` as my key name which results in the following:
+
+```
+junod keys add resourcebook
+```
+
+##### IMPORTANT
+After creating a new key, the key information and seed phrase will be shown. It is essential to write this seed phrase down and keep it in a safe place. The seed phrase is the only way to restore your keys. I like to store my seed pharse in a file close to my key. Copy your seed phrase to past in the following command.
+
+```
+mkdir ~/.juno/seeds
+echo "<seed phrase>" >> ~/.juno/seeds/<key-name>_seed.txt
+
+# Example
+echo "word1 word2 word3 word4 word5 word6 word7 word8 word9 ... word24" >> ~/.juno/seeds/resourcebook_seed.txt
+```
+
+You can check you seed phrase by running: `cat ~/.juno/seeds/resourcebook_seed.txt`
+
+
+# Query the keystore for your public address
+junod keys show resourcebook -a
+```
+
+If you already have a key from a previous testnet, you can recover it using the mnemonic:
+```
+junod keys add <key-name> --recover
+```
+
+ One final step.
+ 
+ #### Get some testnet tokens
+ Testnet tokens can only be requested from the #faucet channel on Discord https://discord.gg/HnHKpzd3Db
+ To request tokens type `$request <your-public-address>` in the message field and press enter.
+ 
+ The offical documentation continues from here for the purpose of upgrading your node to become a validator, something we have no need for yet.
+ 
+ Thats it! Congratulations on installing juno and setting up your very own local testnet node. Although we are isolated, not connected to the rest of the testnet, we can begin following the various tutorials on how to get started with Juno development. 
+ 
+ Some resources that you should immediatley check out is:
+ * Callum's Zero to Hero Course https://github.com/Callum-A/cosmwasm-zero-to-hero
+ * Envoy Labs erc20 Tutorial https://docs.junonetwork.io/smart-contracts-and-junod-development/tutorial-erc-20
+ 
+ That's all I have for now. I will be constantly updating this page with more resources as I make my way through the 
+
+ 
 
 
 
