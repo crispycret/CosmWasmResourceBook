@@ -197,7 +197,7 @@ Check that these changes did take place by checking the variables.
 
 ```
 echo $CHAIN_ID
-echo $MONKIKER_NAME
+echo $MONIKER_NAME
 ```
 
 #### Set persistent peers
